@@ -2,6 +2,8 @@ package com.example.URLShortener.link;
 
 import com.example.URLShortener.click.ClickService;
 import com.example.URLShortener.click.dto.ShortLinkStatsResponseDto;
+import com.example.URLShortener.click.event.LinkClickedEvent;
+import com.example.URLShortener.click.event.LinkClickedEventProducer;
 import com.example.URLShortener.link.dto.CreateShortLinkRequestDto;
 import com.example.URLShortener.link.dto.CreateShortLinkResponseDto;
 import com.example.URLShortener.link.entity.ShortLink;
@@ -20,6 +22,7 @@ public class LinkController {
 
     private final LinkService linkService;
     private final ClickService clickService;
+    private final LinkClickedEventProducer linkClickedEventProducer;
 
     @Value("${app.base-url}")
     private  String baseUrl;
@@ -30,7 +33,7 @@ public class LinkController {
     ) {
         ShortLink shortLink = linkService.createShortLink(request.url());
 
-        String shortUrl = baseUrl + "/links" + shortLink.getShortCode();
+        String shortUrl = baseUrl + "/links/" + shortLink.getShortCode();
 
         return ResponseEntity.ok(new CreateShortLinkResponseDto(
                 shortLink.getOriginalUrl(),
@@ -45,7 +48,10 @@ public class LinkController {
     ) {
         ShortLink shortLink = linkService.getLinkByShortCode(shortCode);
 
-        clickService.registerClick(shortLink);
+        linkClickedEventProducer.send(new LinkClickedEvent(
+                shortLink.getId(),
+                shortLink.getShortCode()
+        ));
 
         return ResponseEntity.status(HttpStatus.FOUND)
                 .header(HttpHeaders.LOCATION, shortLink.getOriginalUrl())
