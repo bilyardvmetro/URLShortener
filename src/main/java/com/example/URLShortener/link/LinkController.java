@@ -1,5 +1,7 @@
 package com.example.URLShortener.link;
 
+import com.example.URLShortener.click.ClickService;
+import com.example.URLShortener.click.dto.ShortLinkStatsResponseDto;
 import com.example.URLShortener.link.dto.CreateShortLinkRequestDto;
 import com.example.URLShortener.link.dto.CreateShortLinkResponseDto;
 import com.example.URLShortener.link.entity.ShortLink;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 public class LinkController {
 
     private final LinkService linkService;
+    private final ClickService clickService;
 
     @Value("${app.base-url}")
     private  String baseUrl;
@@ -42,8 +45,24 @@ public class LinkController {
     ) {
         ShortLink shortLink = linkService.getLinkByShortCode(shortCode);
 
+        clickService.registerClick(shortLink);
+
         return ResponseEntity.status(HttpStatus.FOUND)
                 .header(HttpHeaders.LOCATION, shortLink.getOriginalUrl())
                 .build();
+    }
+
+    @GetMapping("{shortCode}/stats")
+    public ResponseEntity<ShortLinkStatsResponseDto> getStats(
+            @PathVariable String shortCode
+    ) {
+        ShortLink shortLink = linkService.getLinkByShortCode(shortCode);
+        long clicks = clickService.countClicks(shortLink);
+
+        return ResponseEntity.ok(new ShortLinkStatsResponseDto(
+                shortLink.getOriginalUrl(),
+                shortLink.getShortCode(),
+                clicks
+        ));
     }
 }
