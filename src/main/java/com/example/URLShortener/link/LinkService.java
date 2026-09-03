@@ -24,6 +24,10 @@ public class LinkService {
         return shortLinkRepository.save(shortLink);
     }
 
+    public ShortLink getLinkByShortCode(String shortCode) {
+        return shortLinkRepository.findByShortCode(shortCode).orElseThrow();
+    }
+
     private String generateUniqueShortCode() {
         String code;
 
