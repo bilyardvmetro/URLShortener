@@ -1,0 +1,6 @@
+CREATE TABLE short_links (
+    id BIGSERIAL PRIMARY KEY,
+    original_url VARCHAR(2048) NOT NULL,
+    shortCode VARCHAR(32) NOT NULL UNIQUE,
+    createdAt TIMESTAMP WITH TIME ZONE NOT NULL
+);
