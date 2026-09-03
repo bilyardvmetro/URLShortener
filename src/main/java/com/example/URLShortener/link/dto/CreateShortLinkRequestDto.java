@@ -1,4 +1,4 @@
-package com.example.URLShortener.link;
+package com.example.URLShortener.link.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
