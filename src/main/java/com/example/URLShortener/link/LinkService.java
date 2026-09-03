@@ -2,7 +2,9 @@ package com.example.URLShortener.link;
 
 import com.example.URLShortener.link.entity.ShortLink;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.security.SecureRandom;
 
@@ -26,7 +28,11 @@ public class LinkService {
     }
 
     public ShortLink getLinkByShortCode(String shortCode) {
-        return shortLinkRepository.findByShortCode(shortCode).orElseThrow();
+        return shortLinkRepository.findByShortCode(shortCode)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Short Link not found"
+                ));
     }
 
     private String generateUniqueShortCode() {
