@@ -25,7 +25,7 @@ public class LinkController {
     public ResponseEntity<CreateShortLinkResponseDto> createShortLink(
             @Valid @RequestBody CreateShortLinkRequestDto request
     ) {
-        ShortLink shortLink = linkService.generateShortLink(request.url());
+        ShortLink shortLink = linkService.createShortLink(request.url());
 
         String shortUrl = baseUrl + "/links" + shortLink.getShortCode();
 

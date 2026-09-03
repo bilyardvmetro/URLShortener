@@ -16,12 +16,13 @@ public class LinkService {
     private static final String ALPHABET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     private static final int CODE_LENGTH = 8;
 
-    public ShortLink generateShortLink(String url) {
-        String shortCode = generateUniqueShortCode();
-
-        ShortLink shortLink = new ShortLink(url, shortCode);
-
-        return shortLinkRepository.save(shortLink);
+    public ShortLink createShortLink(String url) {
+        return shortLinkRepository.findByOriginalUrl(url)
+                .orElseGet(() -> {
+                    String shortCode = generateUniqueShortCode();
+                    ShortLink shortLink = new ShortLink(url, shortCode);
+                    return shortLinkRepository.save(shortLink);
+                });
     }
 
     public ShortLink getLinkByShortCode(String shortCode) {
