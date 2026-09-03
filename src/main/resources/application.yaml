@@ -7,14 +7,15 @@ spring:
   application:
     name: URLShortener
 
-#  docker:
-#    compose:
-#      lifecycle-management: none
   datasource:
     url: jdbc:postgresql://localhost:49950/mydatabase
     username: myuser
     password: secret
     driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
 
   kafka:
     bootstrap-servers: localhost:9092
