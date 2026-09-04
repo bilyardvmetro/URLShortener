@@ -3,6 +3,15 @@ app:
   kafka:
     link-clicked-topic: link-clicked
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info, prometheus
+  endpoint:
+    health:
+      show-details: always
+
 spring:
   application:
     name: URLShortener
